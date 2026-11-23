@@ -1,0 +1,6 @@
+id=fas_rs
+name=FAS-RS (SCENE4R modify)
+version=v4.9.1-r1
+versionCode=409011
+author=shadow3aaa / SCENE4R modify
+description=FAS-RS modify (GPL-3.0) with Root-only /data/adb/fas-rs boundary, no Lua root extensions, clean shutdown, and stock thermal preservation.

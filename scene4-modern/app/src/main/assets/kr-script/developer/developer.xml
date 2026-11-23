@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <resource dir="file:///android_asset/kr-script/developer" />
+    <resource dir="file:///android_asset/kr-script/common" />
+
+    <group title="调试与异常提示">
+        <switch id="developer_remote_adb">
+            <title>远程 ADB 调试</title>
+            <desc>开启网络调试端口（5555）方便无线连接，请勿在公共 WiFi 环境下启用！</desc>
+            <summary sh="run adb_remote_summary.sh" />
+            <get>run adb_remote_get.sh</get>
+            <set>run adb_remote_set.sh</set>
+        </switch>
+        <switch id="developer_error_dialog" shell="hidden">
+            <title>隐藏错误弹窗</title>
+            <desc>屏蔽应用崩溃或无响应弹窗提示</desc>
+            <get>run hide_errordialog_get.sh</get>
+            <set>run hide_errordialog_set.sh</set>
+        </switch>
+        <switch id="developer_anr" shell="hidden">
+            <title>一律显示崩溃对话框</title>
+            <desc>每次应用崩溃时弹出详细错误框</desc>
+            <get>settings get secure show_first_crash_dialog_dev_option</get>
+            <set>settings put secure show_first_crash_dialog_dev_option $state</set>
+        </switch>
+        <switch id="developer_bg_anr" shell="hidden">
+            <title>显示后台应用未响应</title>
+            <desc>为后台运行的应用程序显示 ANR 对话框</desc>
+            <get>run anr_get.sh</get>
+            <set>run anr_set.sh</set>
+        </switch>
+        <switch id="show_touches" shell="hidden">
+            <title>显示触摸反馈</title>
+            <desc>点击屏幕时在触控点显示视觉圆点</desc>
+            <get>settings get system show_touches</get>
+            <set>settings put system show_touches $state</set>
+        </switch>
+        <picker value=" "
+            target-sdk="29"
+            auto-off="true"
+            visible=". ./kr-script/common/android_q.sh">
+            <title>沙箱机制</title>
+            <desc>控制全局存储分区隔离行为（仅 Android Q 目标环境）</desc>
+            <options>
+                <option value="default">默认</option>
+                <option value="on">开启</option>
+                <option value="off">关闭</option>
+            </options>
+            <set>
+                if [[ $state ]]; then
+                    echo '设备将在5秒重启~'
+                    sleep 5
+                    sm set-isolated-storage $state
+                fi
+            </set>
+        </picker>
+    </group>
+
+    <group title="系统开发者入口">
+        <page activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS" title="开发者选项" />
+        <page activity="com.android.settings/.RunningServices" title="运行中的服务" />
+        <page activity="com.android.settings/.Settings$MemorySettingsActivity" title="内存使用情况" />
+    </group>
+
+    <group title="快捷工具">
+        <action id="PixivID" logo="../icons/pixiv.png" shell="hidden" auto-finish="true">
+            <title>查看 Pixiv 作品</title>
+            <desc>输入 Pixiv 作品 ID 直接打开对应页面</desc>
+            <param name="id" label="作品ID" placeholder="如：82661417" />
+            <set>
+                am start -a android.intent.action.VIEW -d https://www.pixiv.net/artworks/$id
+            </set>
+        </action>
+    </group>
+</root>

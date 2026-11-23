@@ -1,0 +1,6 @@
+id=uperf
+name=Uperf-R
+version=v3-r-1.0
+versionCode=261121
+author=Matt Yang / SCENE4R
+description=Hardened Uperf-R userspace scheduler for Android 16+ (120 SoC profiles), preserving OEM thermal & battery protection.

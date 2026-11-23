@@ -1,0 +1,148 @@
+package com.omarea
+
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shell.ShellExecutor
+import com.omarea.data.EventBus
+import com.omarea.data.customer.ChargeCurve
+import com.omarea.data.customer.ScreenOffCleanup
+import com.omarea.data.publisher.BatteryState
+import com.omarea.data.publisher.ScreenState
+import com.omarea.permissions.Busybox
+import com.omarea.permissions.CheckRootStatus
+import com.omarea.scene_mode.TimingTaskManager
+import com.omarea.scene_mode.TriggerIEventMonitor
+import com.omarea.store.SpfConfig
+import com.omarea.utils.CrashHandler
+import com.omarea.vtools.R
+
+class Scene : Application() {
+    companion object {
+        private val handler = Handler(Looper.getMainLooper())
+        public lateinit var context: Application
+        public lateinit var thisPackageName: String
+        private var nightMode = false
+        private var config: SharedPreferences? = null
+        public val globalConfig:SharedPreferences
+            get () {
+                if (config == null) {
+                    config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                }
+                return config!!
+            }
+
+        public val isNightMode: Boolean
+            get() {
+                return nightMode
+            }
+
+        public fun updateNightMode(dark: Boolean) {
+            nightMode = dark
+        }
+
+        public fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+            return globalConfig.getBoolean(key, defaultValue)
+        }
+
+        public fun setBoolean(key: String, value: Boolean) {
+            globalConfig.edit().putBoolean(key, value).apply()
+        }
+
+        public fun getString(key: String, defaultValue: String): String? {
+            return globalConfig.getString(key, defaultValue)
+        }
+
+        public fun toast(message: String, time: Int) {
+            handler.post {
+                Toast.makeText(context, message, time).show()
+            }
+        }
+
+        public fun toast(message: String) {
+            handler.post {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        public fun toast(message: Int, time: Int) {
+            handler.post {
+                Toast.makeText(context, message, time).show()
+            }
+        }
+
+        public fun post(runnable: Runnable) {
+            handler.post(runnable)
+        }
+
+        public fun postDelayed(runnable: Runnable, delayMillis: Long) {
+            handler.postDelayed(runnable, delayMillis)
+        }
+    }
+
+    // 锁屏状态监听
+    private lateinit var screenState: ScreenState
+
+    private var lastThemeId = R.style.AppTheme
+    private fun setAppTheme(theme: Int) {
+        if (lastThemeId != theme) {
+            setTheme(theme)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        nightMode = ((newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        com.omarea.vtools.activities.ThemeSwitch.syncDefaultNightMode(this)
+        nightMode = com.omarea.vtools.activities.ThemeSwitch.isNightModeActive(this)
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        context = this
+        CrashHandler().init(this)
+
+        thisPackageName = this.packageName
+
+        // 仅在私有busybox已通过完整校验时加入PATH，未通过校验前由Busybox.forceInstall发布
+        if (!Busybox.systemBusyboxInstalled() && Busybox(this).isPrivateBusyboxReady()) {
+            ShellExecutor.setExtraEnvPath(
+                FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
+            )
+        }
+
+        // 锁屏状态检测
+        screenState = ScreenState(this)
+        screenState.autoRegister()
+
+        // 电池状态检测
+        BatteryState(context).registerReceiver()
+
+        // 定时任务
+        TimingTaskManager(this).updateAlarmManager()
+
+        // 事件任务
+        EventBus.subscribe(TriggerIEventMonitor(this))
+
+        // 充电曲线
+        EventBus.subscribe(ChargeCurve(this))
+
+        // 息屏自动关闭悬浮窗
+        EventBus.subscribe(ScreenOffCleanup(context))
+
+        // 如果上次打开应用成功获得root，触发一下root权限申请
+        if (getBoolean("root", false)) {
+            CheckRootStatus.checkRootAsync()
+        }
+    }
+}

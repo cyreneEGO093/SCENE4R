@@ -1,0 +1,14 @@
+{
+    "name": "Uperf-R",
+    "author": "Matt Yang / SCENE4R",
+    "version": "v3-r-1.0",
+    "versionCode": 261121,
+    "features": {
+        "strict": false,
+        "pedestal": true
+    },
+    "module": "uperf",
+    "state": "/data/adb/uperf/cur_powermode.txt",
+    "entry": "/data/powercfg.sh",
+    "projectUrl": "https://github.com/yc9559/uperf"
+}

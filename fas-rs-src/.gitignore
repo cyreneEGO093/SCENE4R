@@ -1,0 +1,17 @@
+# target
+/target
+
+# build
+/output
+
+# py
+/__pycache__
+
+# idea
+/.idea
+
+# Darwin
+/.DS_Store
+
+# pnpm
+.pnpm*

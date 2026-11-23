@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <resource dir="file:///android_asset/kr-script/apps" />
+    <resource dir="file:///android_asset/kr-script/common" />
+
+    <group title="Google 服务与组件">
+        <page auto-off="true" id="google_settings" activity="com.google.android.gms/.app.settings.GoogleSettingsLink"
+            visible=". ./kr-script/common/gapps_support.sh">
+            <title>打开 Google 设置</title>
+            <desc>便捷打开被定制系统隐藏的“Google 设置”入口</desc>
+        </page>
+        <switch id="google_service"
+            logo-path="kr-script/apps/google.png"
+            shell="hidden"
+            visible=". ./kr-script/common/gapps_support.sh">
+            <title>启用 Google 服务</title>
+            <desc>关闭此选项可临时停用谷歌框架以节省电量</desc>
+            <get>run gapps_get.sh</get>
+            <set>run gapps_set.sh</set>
+        </switch>
+        <switch auto-off="true" id="google_hal_eis" shell="hidden">
+            <title>Camera2 HAL、EIS</title>
+            <desc>启用 HAL 与 EIS 以支持 Google 相机 HDR+ 或避免闪退（可能导致切换慢）</desc>
+            <summary>Google 相机需自行下载适配当前机型的版本</summary>
+            <get>run gcm_get.sh</get>
+            <set>run gcm_set.sh</set>
+        </switch>
+        <page link="https://play.google.com/store/account/subscriptions">
+            <title>Google 订阅管理</title>
+            <desc>查看并管理 Play 商店的付费订阅内容</desc>
+        </page>
+    </group>
+
+    <group title="安装位置与默认应用">
+        <picker title="应用安装位置" auto-off="true" summary-sh="run install-location-summary.sh">
+            <option value="0">自动（系统自动决定）</option>
+            <option value="1">内部存储（本机）</option>
+            <option value="2">外部存储（SD卡）</option>
+            <get>pm get-install-location | cut -f1 -d '['</get>
+            <set>
+                pm set-install-location $state
+                echo '注意：部分应用在清单文件中锁定了安装路径，可能不受此设置影响'
+            </set>
+        </picker>
+        <picker auto-off="true"
+            visible=". ./kr-script/common/android_p.sh"
+            summary-sh="run launcher/get.sh"
+            options-sh="run launcher/options.sh">
+            <title>默认桌面</title>
+            <get>run launcher/get.sh</get>
+            <set>run launcher/set.sh</set>
+        </picker>
+        <page title="选择动态壁纸" id="livepicker"
+            activity="com.android.wallpaper.livepicker/com.android.wallpaper.livepicker.LiveWallpaperActivity" />
+        <page
+            title="默认应用设置"
+            activity="com.android.permissioncontroller/com.android.packageinstaller.role.ui.DefaultAppListActivity"
+            visible="pm query-activities --brief -n com.android.permissioncontroller/com.android.packageinstaller.role.ui.DefaultAppListActivity | grep '/' > /dev/null &amp;&amp; echo 1" />
+    </group>
+</items>

@@ -1,0 +1,39 @@
+# Local upstream reference snapshots & archives (not for redistribution)
+/ref/
+/upstream/
+
+# Distributable release binaries (publish via GitHub Releases; keep checksums in git)
+/dist/*.apk
+/dist/*.zip
+
+# Unused legacy upstream binaries
+scene4-modern/others/xposed-addin.apk
+scene4-modern/swap-controller/swap-controller-*.zip
+
+# Gradle / Android / NDK / Kotlin caches & local config
+scene4-modern/.gradle/
+scene4-modern/.kotlin/
+scene4-modern/.idea/
+scene4-modern/.settings/
+scene4-modern/.project
+scene4-modern/build/
+scene4-modern/*/build/
+scene4-modern/app/.cxx/
+local.properties
+**/local.properties
+
+# Keystores & signing secrets
+*.jks
+*.keystore
+*.p12
+
+# Rust / eBPF build artifacts
+/fas-rs-src/target/
+/fas-rs-src/output/
+/fas-rs-src/vendor/frame-analyzer/.ebpf_target/
+
+# Python / OS / IDE noise
+**/__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

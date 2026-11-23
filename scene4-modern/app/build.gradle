@@ -1,0 +1,120 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.omarea.vtools'
+    compileSdk 36
+
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+        buildConfig true
+        aidl true
+    }
+
+    signingConfigs {
+        release {
+            def ksPath = System.getenv("SCENE_KEYSTORE_PATH")
+            if (ksPath != null && !ksPath.isEmpty()) {
+                storeFile file(ksPath)
+                storePassword System.getenv("SCENE_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("SCENE_KEY_ALIAS")
+                keyPassword System.getenv("SCENE_KEY_PASSWORD")
+            }
+        }
+    }
+
+    defaultConfig {
+        resConfigs "zh"
+        applicationId "com.omarea.vtools"
+        minSdk 23
+        targetSdk 36
+        versionCode 202611201
+        versionName "4.8.0-uperf"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+            debuggable false
+            jniDebuggable false
+            def ksPath = System.getenv("SCENE_KEYSTORE_PATH")
+            if (ksPath != null && !ksPath.isEmpty()) {
+                signingConfig signingConfigs.release
+            }
+        }
+        release_mini {
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            debuggable false
+            jniDebuggable false
+            def ksPath = System.getenv("SCENE_KEYSTORE_PATH")
+            if (ksPath != null && !ksPath.isEmpty()) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            jniDebuggable false
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    ndkVersion '27.2.12479018'
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+            keepDebugSymbols += ['**/libbusybox.so']
+        }
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
+    compileOnly 'de.robv.android.xposed:api:82'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.activity:activity-ktx:1.10.0'
+    implementation 'androidx.fragment:fragment-ktx:1.8.5'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation project(':common')
+    implementation project(':krscript')
+}

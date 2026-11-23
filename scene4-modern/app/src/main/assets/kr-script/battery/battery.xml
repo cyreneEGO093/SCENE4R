@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <resource dir="file:///android_asset/kr-script/battery" />
+    <resource dir="file:///android_asset/kr-script/aosp" />
+
+    <group title="省电与低电量策略">
+        <switch>
+            <title>原生省电模式</title>
+            <desc>开关原生 Android 自带的省电模式（非第三方 UI 定制省电）</desc>
+            <get>. ./kr-script/aosp/ps/get.sh</get>
+            <set>. ./kr-script/aosp/ps/set.sh</set>
+        </switch>
+        <action>
+            <title>低电量触发级别</title>
+            <desc>设置自动触发省电模式及低电量提醒的电量百分比阈值</desc>
+            <params>
+                <param name="level" title="低电量模式触发级别"
+                    options-sh=". ./kr-script/aosp/pl/options.sh"
+                    value-sh="settings get global low_power_trigger_level" />
+                <param name="levelmax" title="低电量提示级别"
+                    options-sh=". ./kr-script/aosp/pl/options.sh"
+                    value-sh="settings get global low_power_trigger_level_max" />
+            </params>
+            <set>. ./kr-script/aosp/pl/set.sh</set>
+        </action>
+    </group>
+
+    <group title="电池优化与耗电记录">
+        <action confirm="true">
+            <title>清理电池优化白名单</title>
+            <desc>适用于 Android M+，清理 Doze 模式白名单应用，减少常驻后台偷跑</desc>
+            <set>run doze_clear.sh</set>
+        </action>
+
+        <page
+            id="HighPowerApplicationsActivity"
+            activity="com.android.settings/.Settings$HighPowerApplicationsActivity">
+            <title>系统电池优化设置</title>
+            <desc>跳转到系统的电池优化白名单管理界面</desc>
+        </page>
+
+        <action confirm="true">
+            <title>清空耗电记录</title>
+            <desc>清空应用耗电记录和电池曲线统计（并不会改变实际电池健康度）</desc>
+            <set>run history_clear.sh</set>
+        </action>
+    </group>
+</root>

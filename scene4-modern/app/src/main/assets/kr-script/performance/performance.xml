@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <resource dir="file:///android_asset/kr-script/performance" />
+    <resource dir="file:///android_asset/kr-script/qualcomm" />
+
+    <group title="dex2oat 编译优化">
+        <page
+            id="native_dex_compile"
+            allow-shortcut="false"
+            min-sdk="24"
+            title="强制 dex2oat 编译"
+            desc="通过后台服务对应用执行 speed / speed-profile / everything 编译或重置，降低运行时开销" />
+
+        <action visible=". ./kr-script/common/android_n.sh">
+            <title>按范围执行 dex2oat 编译</title>
+            <desc>直接对指定范围应用执行 cmd package compile，系统或应用更新后需重新执行</desc>
+            <param name="app" value=" " title="要编译的应用" desc="首次执行可能耗时较长，已处理的应用会加快跳过">
+                <option value=" ">全部</option>
+                <option value="-s">仅系统应用</option>
+                <option value="-3">仅第三方应用</option>
+            </param>
+            <param name="mode" value="speed" title="编译模式" desc="如不了解区别，保持默认 Speed 模式即可">
+                <option value="speed">Speed模式（推荐）</option>
+                <option value="everything">Everything模式</option>
+            </param>
+            <set>run dex2oat/compile.sh</set>
+        </action>
+
+        <action min-sdk="24" visible="getprop persist.vtools.ext_all">
+            <title>修改 dex2oat 线程数</title>
+            <desc>提高后台编译线程数（不超过 CPU 核心数），可能引起安装过程短时卡顿</desc>
+            <set>run dex2oat/threads_set.sh</set>
+            <params>
+                <param name="boot" title="启动时(boot-dex2oat-threads)"
+                    options-sh="run thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
+                <param name="dex2oat" title="启动后(dex2oat-threads)"
+                    options-sh="run thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.dex2oat-threads" />
+                <param name="image" title="编译启动映像(image-dex2oat-threads)"
+                    options-sh="run thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.image-dex2oat-threads" />
+                <param name="other" title="dex2oat_thread_count" readonly="readonly">
+                    <option value="">默认</option>
+                </param>
+            </params>
+        </action>
+    </group>
+
+    <group title="磁盘与缓存">
+        <action>
+            <title>执行 FSTRIM</title>
+            <desc>触发闪存分区 TRIM 回收，维护长期读写性能</desc>
+            <set>
+                echo 'fstrim /data'; fstrim /data;
+                echo 'fstrim /cache'; fstrim /cache;
+                echo 'fstrim /system'; fstrim /system 2>/dev/null;
+                sm fstrim 2>/dev/null
+                echo '命令已执行';
+            </set>
+        </action>
+        <action confirm="true">
+            <title>清空 dalvik-cache</title>
+            <desc>清空 dalvik 缓存并立即重启手机，下次开机会重建缓存。不会直接提升性能，请谨慎操作。</desc>
+            <set>run drop-dalvik-cache.sh</set>
+        </action>
+    </group>
+
+    <group title="高通系统调度（危险开关控制）" visible="getprop persist.vtools.ext_all">
+        <switch confirm="true" visible=". ./kr-script/qualcomm/msm_booster_support.sh">
+            <title>Performance Boost Config</title>
+            <desc>关闭后可能导致操作瞬时升频减弱、流畅度下降</desc>
+            <get>. ./kr-script/qualcomm/msm_booster_get.sh</get>
+            <set>. ./kr-script/qualcomm/msm_booster_set.sh</set>
+        </switch>
+        <switch confirm="true" visible=". ./kr-script/qualcomm/msm_perfd_support.sh">
+            <title>Perfd</title>
+            <desc>关闭后可能导致操作瞬时升频减弱、流畅度下降</desc>
+            <get>. ./kr-script/qualcomm/msm_perfd_get.sh</get>
+            <set>. ./kr-script/qualcomm/msm_perfd_set.sh</set>
+        </switch>
+    </group>
+</items>

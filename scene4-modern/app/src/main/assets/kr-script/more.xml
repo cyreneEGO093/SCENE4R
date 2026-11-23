@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <resource dir="file:///android_asset/kr-script/common" />
+
+    <group>
+        <switch
+            visible="if [[ `getprop persist.vtools.ext_all` != '1' ]]; then echo 1; fi"
+            shell="hidden"
+            reload="page"
+            warning="使用需要修改系统文件的功能，可能会由于兼容性或异常导致系统损坏，并且无法通过恢复出厂设置还原。确定要继续使用这些功能吗？">
+            <title>显示危险功能</title>
+            <desc>显示需要修改系统文件的进阶选项</desc>
+            <set>setprop persist.vtools.ext_all $state</set>
+            <get>getprop persist.vtools.ext_all</get>
+        </switch>
+        <switch
+            visible="getprop persist.vtools.ext_all"
+            shell="hidden"
+            reload="page">
+            <title>显示危险功能</title>
+            <desc>显示需要修改系统文件的进阶选项</desc>
+            <set>setprop persist.vtools.ext_all $state</set>
+            <get>getprop persist.vtools.ext_all</get>
+        </switch>
+    </group>
+
+    <group title="系统与工具">
+        <page
+            id="page-display"
+            config="display.xml"
+            desc="DPI/分辨率、窗口动画、状态栏与视觉辅助"
+            title="显示与界面" />
+        <page
+            id="page-device"
+            config="device.xml"
+            desc="WiFi/MAC、网络检测、NTP、机型与硬件状态"
+            title="网络与设备" />
+        <page
+            id="page-performance"
+            config="performance/performance.xml"
+            desc="dex2oat 编译、FSTRIM 与高通调度参数"
+            title="性能与存储" />
+        <page
+            id="page-battery"
+            config="battery/battery.xml"
+            desc="原生省电、低电量阈值、Doze 白名单与耗电记录"
+            title="电池与电源" />
+        <page
+            id="page-apps"
+            config="apps/apps.xml"
+            desc="Google 框架、安装位置与默认应用设置"
+            title="应用程序" />
+        <page
+            id="page-developer"
+            config="developer/developer.xml"
+            desc="远程 ADB、崩溃弹窗、系统调试入口与快捷工具"
+            title="开发者与工具" />
+    </group>
+
+    <group title="平台与系统专属">
+        <page
+            id="page-xiaomi"
+            config="miui/miui.xml"
+            desc="适用于 MIUI/HyperOS 系统的选项"
+            title="MIUI专属"
+            visible="run common/miui_support.sh" />
+        <page
+            id="page-mtk"
+            config-sh="file:///android_asset/kr-script/mtk/mtk.sh"
+            desc="MTK/天玑专属选项"
+            title="MTK/天玑专属"
+            visible="run common/mtk_ppm.sh" />
+    </group>
+</pages>

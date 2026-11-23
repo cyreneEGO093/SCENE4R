@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/confirm_title"
+            style="@style/dialogTitle"
+            android:text="Xposed全局配置" />
+        <TextView
+            android:id="@+id/confirm_message"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            style="@style/dialogDesc"
+            android:text="已内置于 SCENE4R，请先在 LSPosed / Vector 管理器中启用模块并勾选目标作用域" />
+
+        <FrameLayout
+            android:visibility="gone"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <SeekBar
+                android:id="@+id/swap_size"
+                style="@style/SceneSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:progress="8"
+                android:max="64" />
+
+            <TextView
+                android:id="@+id/swap_size_text"
+                android:text="0MB"
+                style="@style/textSmall"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@drawable/in_card_item_inactive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#2196F3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_menu_addon"
+                    app:tint="@android:color/white" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="弹性缓慢滚动" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="调整滚动速度和惯性阻尼、长按与短按触发时长等参数，使触控体验更佳" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/xposed_android_scroll"
+                    android:checked="false"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#2196F3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_menu_addon"
+                    app:tint="@android:color/white" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="全局强制开启 WebView 调试" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="对作用域内的应用强制启用 WebView 调试模式（Chrome DevTools）" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/xposed_global_web_debug"
+                    android:checked="false"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#2196F3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_menu_addon"
+                    app:tint="@android:color/white" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="应用偏见自动解冻" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="在桌面或应用跳转启动已冻结的应用时，自动通知 SCENE4R 解冻并启动" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/xposed_freeze_open"
+                    android:checked="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="@style/dialogCancelBtn"
+            android:text="取消" />
+
+        <Button
+            android:layout_marginStart="8dp"
+            android:id="@+id/btn_confirm"
+            style="@style/dialogConfirmBtn"
+            android:text="确定" />
+    </LinearLayout>
+
+</LinearLayout>

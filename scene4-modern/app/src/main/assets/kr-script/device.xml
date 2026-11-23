@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <resource dir="file:///android_asset/kr-script/aosp" />
+    <resource dir="file:///android_asset/kr-script/other" />
+
+    <group title="无线与网络">
+        <page
+            id="native_wifi"
+            allow-shortcut="false"
+            title="查看已保存的 WiFi"
+            desc="解析系统保存的 WiFi 密码与配置信息" />
+        <page
+            id="native_mac_1"
+            allow-shortcut="false"
+            title="修改 MAC 地址（方案1）"
+            desc="自定义无线网卡 MAC 地址，仅支持部分设备" />
+        <page
+            id="native_mac_2"
+            allow-shortcut="false"
+            title="修改 MAC 地址（方案2）"
+            desc="自定义无线网卡 MAC 地址，比较适合 Android 10+" />
+        <picker>
+            <title>去除网络状态栏 ! 和 ×</title>
+            <desc>更改网络连通性检测服务器，解决 WiFi/LTE 图标显示感叹号或叉号</desc>
+            <summary sh="run aosp/network_checker_summary.sh" />
+            <options>
+                <option value="miui">MIUI服务器</option>
+                <option value="google">Google服务器</option>
+                <option value="v2ex">V2EX服务器</option>
+                <option value="disable">禁用网络验证</option>
+                <option value="default">还原默认</option>
+            </options>
+            <get>run aosp/network_checker_get.sh</get>
+            <set>run aosp/network_checker_set.sh</set>
+        </picker>
+        <picker>
+            <title>切换 NTP 时间服务器</title>
+            <desc>如果系统时间能正常同步，则无需更换</desc>
+            <options>
+                <option>pool.ntp.org</option>
+                <option>ntp.ntsc.ac.cn</option>
+                <option>ntp1.aliyun.com</option>
+                <option>cn.pool.ntp.org</option>
+                <option>time.cloudflare.com</option>
+            </options>
+            <get>settings get global ntp_server</get>
+            <set>run aosp/ntp_set.sh</set>
+        </picker>
+        <action>
+            <title>自定义 NTP 服务器</title>
+            <desc>手动指定时间同步服务器地址</desc>
+            <param name="state" desc="请输入 NTP 服务器地址" value-sh="settings get global ntp_server" />
+            <set>run aosp/ntp_set.sh</set>
+        </action>
+    </group>
+
+    <group title="设备与硬件">
+        <page
+            id="native_deviceinfo"
+            allow-shortcut="false"
+            title="机型修改"
+            desc="通过更改系统属性伪装机型（兼容应用变量模板，修改前请注意风险）" />
+        <action>
+            <title>UFS 存储寿命</title>
+            <summary sh="run other/ufs/ufs_summary.sh" />
+            <set>run other/ufs/ufs_detail.sh</set>
+            <desc>读取 UFS 健康描述符评估磨损程度（数据仅供参考）</desc>
+        </action>
+        <action confirm="false">
+            <title>温度传感器读数</title>
+            <desc>查看设备各热敏传感器当前温度</desc>
+            <set>run other/sensor_values.sh</set>
+        </action>
+        <picker
+            visible="run other/377_key/support.sh"
+            options-sh="run other/377_key/options.sh"
+            shell="hidden">
+            <title>Google 键事件</title>
+            <summary sh="run other/377_key/summary.sh" />
+            <get>run other/377_key/get.sh</get>
+            <set>run other/377_key/set.sh</set>
+        </picker>
+    </group>
+</items>
